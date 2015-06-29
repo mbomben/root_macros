@@ -4,10 +4,15 @@
 #include "TGraph.h"
 #include "TMath.h"
 #include "TAxis.h"
+#include "TROOT.h"
 #include "TF1.h"
 
+const double eR = 11.9;     // Silicon relative dielectric constant
+const double e0 = 8.85e-14; // F/cm
+const double q0 = 1.6e-19;  // C
 
-void CV(const char* fileName, const char* type, double A, double v1, double v2, double v3, double v4, double &vdepl, double &evdepl) {
+void CV(const char* fileName, const char* type, double A, double v1, double v2, double v3, double v4, double &vdepl, double &evdepl, double &neff, double &eneff, double &w, double &ew) {
+
   TString simsstring("SIMU");
   TString datastring("DATA");
   int NMAX = 500;
@@ -99,15 +104,56 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   assert((logm1-logm2)!=0);
   double logvdep = (logq1-logq2)/(logm2-logm1);
   vdepl = TMath::Power(10.,logvdep);
-  std::cout << "vdepl = " << vdepl << " V \n";
   double Deltam = sqrt(TMath::Power(elogm1,2.)+TMath::Power(elogm2,2.));
   double Deltaq = sqrt(TMath::Power(elogq1,2.)+TMath::Power(elogq2,2.));
 
   evdepl = sqrt(TMath::Power(Deltaq,2.)/TMath::Power((logm2-logm1),2.) + TMath::Power(Deltam,2.)*TMath::Power((logq1-logq2),2.)/TMath::Power((logm2-logm1),2.));
 
   evdepl = TMath::Power(10.,evdepl);
+
+  TGraph *grC2V = new TGraph(i,V,C2);
+  grC2V->SetName("grC2V");
+  grC2V->SetTitle("");
+  grC2V->SetMarkerColor(kBlue);
+  grC2V->SetMarkerStyle(24);
+  grC2V->SetMarkerSize(1.2);
+  grC2V->SetLineColor(kBlue);
+  grC2V->Draw("AP");
+  grC2V->GetYaxis()->SetTitle("C^{-2} [F^{-2}]");
+  grC2V->GetXaxis()->SetTitle("V_{bias} [V]");
+
+  grC2V->Fit("pol1","R","",v1,v2);
+  TF1 *lin = (TF1*)gROOT->GetFunction("pol1");
+  lin->SetLineColor(kRed);
+
+  double C2der = lin->GetParameter(1);
+  double eC2der = lin->GetParError(1);
+
+  neff = 2./A/A/q0/eR/e0/C2der;
+  eneff = 2./A/A/q0/eR/e0/C2der/C2der*eC2der;
+
+  w = TMath::Power(2.*eR*e0*vdepl/q0/neff,0.5);
+
+  double ewA = 2*eR*e0/q0;
+  ewA = TMath::Power(ewA,0.5);
+
+  double ewNeff = 0.5*ewA*TMath::Power(vdepl,0.5)*TMath::Power(neff,-1.5)*eneff;
+  double ewV = 0.5*ewA*TMath::Power(vdepl,-0.5)*TMath::Power(neff,-0.5)*evdepl;
+
+  ew = TMath::Sqrt(ewNeff*ewNeff+ewV*ewV);
+
+  std::cout << "v1 = " << v1 << " V\n"; 
+  std::cout << "v2 = " << v2 << " V\n"; 
+  std::cout << "v3 = " << v3 << " V\n"; 
+  std::cout << "v4 = " << v4 << " V\n"; 
+
+  std::cout << "vdepl = " << vdepl << " V \n";
   std::cout << "evdepl = " << evdepl << " V \n";
 
+  std::cout << "neff = " << neff << " 1./cm^3\n";
+  std::cout << "eneff = " << eneff << " 1./cm^3\n";
+  std::cout << "w = " << w*1e+4 << " um\n";
+  std::cout << "ew = " << ew*1e+4 << " um\n";
 
   file.close();
 } 
