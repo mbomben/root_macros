@@ -1,9 +1,16 @@
+#include <fstream>
+#include "TString.h"
+#include "TCanvas.h"
+#include "TGraph.h"
+#include "TMath.h"
+#include "TAxis.h"
+#include "TF1.h"
 
 
-void CV(const char* fileName, const char* type, double A, double v1, double v2, double v3, double v4) {
+void CV(const char* fileName, const char* type, double A, double v1, double v2, double v3, double v4, double &vdepl, double &evdepl) {
   TString simsstring("SIMU");
   TString datastring("DATA");
-  int NMAX = 200;
+  int NMAX = 500;
   if ( ! (simsstring.EqualTo(type) || datastring.EqualTo(type) ) ) {
     std::cerr << "type must be either SIMU or DATA, not -> " << type << "\n";
     exit(2);
@@ -38,6 +45,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
     if ( i > NMAX ) {
       std::cerr << "Too many lines: " << i << "\n";
       std::cerr << "Maximum is :    " << NMAX << "\n";
+      exit(4);
     }
 
   } 
@@ -71,12 +79,35 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   double logv3 = TMath::Log10(v3);
   double logv4 = TMath::Log10(v4);
 
-  TF1 *loglin1 = new TF1("loglin1","[0]+[1]*x",logv1*0.9,logv2*1.1);
-  TF1 *loglin2 = new TF1("loglin2","[0]+[1]*x",logv3*0.9,logv4*1.1);
+  TF1 *loglin1 = new TF1("loglin1","[0]+[1]*x",logv1*0.8,logv2*1.2);
+  TF1 *loglin2 = new TF1("loglin2","[0]+[1]*x",logv3*0.8,logv4*1.2);
   loglin1->SetLineColor(kRed);
   loglin2->SetLineColor(kBlue);
   grlogClogV->Fit("loglin1","R","",logv1,logv2);
   grlogClogV->Fit("loglin2","R+","",logv3,logv4);
+
+  double logq1 = loglin1->GetParameter(0);
+  double logq2 = loglin2->GetParameter(0);
+  double logm1 = loglin1->GetParameter(1);
+  double logm2 = loglin2->GetParameter(1);
+
+  double elogq1 = loglin1->GetParError(0);
+  double elogq2 = loglin2->GetParError(0);
+  double elogm1 = loglin1->GetParError(1);
+  double elogm2 = loglin2->GetParError(1);
+
+  assert((logm1-logm2)!=0);
+  double logvdep = (logq1-logq2)/(logm2-logm1);
+  vdepl = TMath::Power(10.,logvdep);
+  std::cout << "vdepl = " << vdepl << " V \n";
+  double Deltam = sqrt(TMath::Power(elogm1,2.)+TMath::Power(elogm2,2.));
+  double Deltaq = sqrt(TMath::Power(elogq1,2.)+TMath::Power(elogq2,2.));
+
+  evdepl = sqrt(TMath::Power(Deltaq,2.)/TMath::Power((logm2-logm1),2.) + TMath::Power(Deltam,2.)*TMath::Power((logq1-logq2),2.)/TMath::Power((logm2-logm1),2.));
+
+  evdepl = TMath::Power(10.,evdepl);
+  std::cout << "evdepl = " << evdepl << " V \n";
+
 
   file.close();
 } 
