@@ -156,4 +156,5 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   std::cout << "ew = " << ew*1e+4 << " um\n";
 
   file.close();
+  grlogClogV->Draw("AP");
 } 
