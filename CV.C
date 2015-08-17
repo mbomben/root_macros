@@ -68,6 +68,8 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grCV->GetYaxis()->SetTitle("C [F]");
   grCV->GetXaxis()->SetTitle("V_{bias} [V]");
 
+  TCanvas *c2 = new TCanvas("c2","",2000,1000);
+  c2->cd();
   TGraph* grlogClogV = new TGraph(i,logV,logC);
   grlogClogV->SetName("grlogClogV");
   grlogClogV->SetTitle("");
@@ -111,6 +113,8 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
 
   evdepl = TMath::Power(10.,evdepl);
 
+  TCanvas *c3 = new TCanvas("c3","",2000,1000);
+  c3->cd();
   TGraph *grC2V = new TGraph(i,V,C2);
   grC2V->SetName("grC2V");
   grC2V->SetTitle("");
@@ -156,5 +160,4 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   std::cout << "ew = " << ew*1e+4 << " um\n";
 
   file.close();
-  grlogClogV->Draw("AP");
 } 
