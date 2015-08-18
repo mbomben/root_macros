@@ -6,12 +6,13 @@
 #include "TAxis.h"
 #include "TROOT.h"
 #include "TF1.h"
+#include "TString.h"
 
 const double eR = 11.9;     // Silicon relative dielectric constant
 const double e0 = 8.85e-14; // F/cm
 const double q0 = 1.6e-19;  // C
 
-void CV(const char* fileName, const char* type, double A, double v1, double v2, double v3, double v4, double &vdepl, double &evdepl, double &neff, double &eneff, double &w, double &ew) {
+void CV(const char* fileName, const char* type, double A, double v1, double v2, double v3, double v4, double &vdepl, double &evdepl, double &neff, double &eneff, double &w, double &ew, bool savePlots=false) {
 
   TString simsstring("SIMU");
   TString datastring("DATA");
@@ -67,6 +68,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grCV->Draw("AP");
   grCV->GetYaxis()->SetTitle("C [F]");
   grCV->GetXaxis()->SetTitle("V_{bias} [V]");
+  c1->SetTicks(1);
 
   TCanvas *c2 = new TCanvas("c2","",2000,1000);
   c2->cd();
@@ -80,14 +82,15 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grlogClogV->Draw("AP");
   grlogClogV->GetYaxis()->SetTitle("log_{10}(C/F)");
   grlogClogV->GetXaxis()->SetTitle("log_{10}(V_{bias}/V)");
+  c2->SetTicks(1);
 
   double logv1 = TMath::Log10(v1);
   double logv2 = TMath::Log10(v2);
   double logv3 = TMath::Log10(v3);
   double logv4 = TMath::Log10(v4);
 
-  TF1 *loglin1 = new TF1("loglin1","[0]+[1]*x",logv1*0.8,logv2*1.2);
-  TF1 *loglin2 = new TF1("loglin2","[0]+[1]*x",logv3*0.8,logv4*1.2);
+  TF1 *loglin1 = new TF1("loglin1","[0]+[1]*x",logv1,logv2);
+  TF1 *loglin2 = new TF1("loglin2","[0]+[1]*x",logv3,logv4);
   loglin1->SetLineColor(kRed);
   loglin2->SetLineColor(kBlue);
   grlogClogV->Fit("loglin1","R","",logv1,logv2);
@@ -113,6 +116,21 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
 
   evdepl = TMath::Power(10.,evdepl);
 
+  TF1 *flog1 = new TF1("flog1","[0]+[1]*x",logv1*0.8,logv2*1.2);
+  TF1 *flog2 = new TF1("flog2","[0]+[1]*x",logv3*0.8,logv4*1.2);
+  flog1->SetParameters(logq1,logm1);
+  flog2->SetParameters(logq2,logm2);
+  flog1->SetLineStyle(7);
+  flog1->SetLineColor(loglin1->GetLineColor());
+  flog2->SetLineStyle(kDashed);
+  flog2->SetLineColor(loglin2->GetLineColor());
+  grlogClogV->Draw("AP");
+  flog1->Draw("same");
+  flog2->Draw("same");
+  loglin1->Draw("same");
+  loglin2->Draw("same");
+
+
   TCanvas *c3 = new TCanvas("c3","",2000,1000);
   c3->cd();
   TGraph *grC2V = new TGraph(i,V,C2);
@@ -125,6 +143,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grC2V->Draw("AP");
   grC2V->GetYaxis()->SetTitle("C^{-2} [F^{-2}]");
   grC2V->GetXaxis()->SetTitle("V_{bias} [V]");
+  c3->SetTicks(1);
 
   grC2V->Fit("pol1","R","",v1,v2);
   TF1 *lin = (TF1*)gROOT->GetFunction("pol1");
@@ -160,4 +179,22 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   std::cout << "ew = " << ew*1e+4 << " um\n";
 
   file.close();
+
+  if ( savePlots == true ) {
+    std::cout << "I will save plots\n";
+    TString saveFile(fileName);
+    TString cvFile = saveFile;
+    cvFile.ReplaceAll(".dat","_CV.png");
+    TString c2vFile = saveFile;
+    c2vFile.ReplaceAll(".dat","_C2V.png");
+    TString logclogvFile = saveFile;
+    logclogvFile.ReplaceAll(".dat","_logClogV.png");
+    c1->Draw();
+    c1->SaveAs(cvFile.Data());
+    c2->Draw();
+    c2->SaveAs(logclogvFile.Data());
+    c3->Draw();
+    c3->SaveAs(c2vFile.Data());
+  }
+
 } 
