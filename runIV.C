@@ -1,7 +1,32 @@
 {
   gROOT->Reset();
-  gSystem->CompileMacro("IV.C");
-  gSystem->Load("IV_C.so");
+  //gSystem->AddIncludePath("-I/Users/mbomben/work/root_macros");
+  gROOT->LoadMacro("IV.C+");
+  //gSystem->CompileMacro("IV.C");
+  //gSystem->Load("IV_C.so");
   double alpha;
-  IV("/Users/bomben/work/RD50/Natascha/newPetaseccaLow/ninp_fei4_3pixels_fluence\=2e+15_bias\=2000_RD50_PX2_Current_pruned.dat","SIMU",50e-8,200e-4,130,253.15,2e15,alpha);
+  //IV("/Users/mbomben/work/RD50/Natascha/newPetaseccaLow/ninp_fei4_3pixels_fluence=2e+15_bias=2000_RD50_PX2_Current_pruned.dat","SIMU",50e-8,200e-4,130,253.15,2e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w50/small_steps_fl0_plateau/ninp_fei4_3pixels_fluence=0_bias=1000_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,50e-4,130,253.15,0e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4,47,253.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_traptunnel_fl1e15/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4,47,253.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_interface_fl1e15/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4,10,253.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_interface_traptunnel_fl1e15/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4,44,253.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4,106,293.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20_Eg1.08/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4,228,293.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20_Eg1.09/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4,170,293.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20_Eg1.10/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4,132,293.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4,110,293.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20_Eg1.12/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 86,293.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20_Eg1.13/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 70,293.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20_Eg1.14/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 59,293.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,293.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T15/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,288.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T10/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,283.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T5/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,278.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T0/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,273.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T-5/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,268.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T-10/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,263.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T-15/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,258.15,1e15,alpha);
+  //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,253.15,1e15,alpha);
+  IV("no_mult_Petasecca_traptunnel_fl1e15_T-20/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,253.15,1e15,alpha);
 }
