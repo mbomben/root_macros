@@ -37,7 +37,7 @@ void IV(const char* fileName, const char* type, double A, double w, double v1, d
   assert(fluence>0);
   TString simsstring("SIMU");
   TString datastring("DATA");
-  int NMAX = 500;
+  int NMAX = 1000;
   if ( ! (simsstring.EqualTo(type) || datastring.EqualTo(type) ) ) {
     std::cerr << "type must be either SIMU or DATA, not -> " << type << "\n";
     exit(2);
@@ -94,6 +94,8 @@ void IV(const char* fileName, const char* type, double A, double w, double v1, d
   l->SetLineWidth(2);
   l->SetLineStyle(kDashed);
   l->Draw();
+
+  gPad->SetLogy(1);
  
   TString saveFile(fileName);
   TString globalName =  ((TObjString*)saveFile.Tokenize(".")->At(0))->GetString();

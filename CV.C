@@ -16,7 +16,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
 
   TString simsstring("SIMU");
   TString datastring("DATA");
-  int NMAX = 500;
+  int NMAX = 1000;
   if ( ! (simsstring.EqualTo(type) || datastring.EqualTo(type) ) ) {
     std::cerr << "type must be either SIMU or DATA, not -> " << type << "\n";
     exit(2);
