@@ -69,6 +69,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grCV->GetYaxis()->SetTitle("C [F]");
   grCV->GetXaxis()->SetTitle("V_{bias} [V]");
   c1->SetTicks(1);
+  c1->SetGrid(1,1);
 
   TCanvas *c2 = new TCanvas("c2","",2000,1000);
   c2->cd();
@@ -83,6 +84,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grlogClogV->GetYaxis()->SetTitle("log_{10}(C/F)");
   grlogClogV->GetXaxis()->SetTitle("log_{10}(V_{bias}/V)");
   c2->SetTicks(1);
+  c2->SetGrid(1,1);
 
   double logv1 = TMath::Log10(v1);
   double logv2 = TMath::Log10(v2);
@@ -144,6 +146,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grC2V->GetYaxis()->SetTitle("C^{-2} [F^{-2}]");
   grC2V->GetXaxis()->SetTitle("V_{bias} [V]");
   c3->SetTicks(1);
+  c3->SetGrid(1,1);
 
   grC2V->Fit("pol1","R","",v1,v2);
   TF1 *lin = (TF1*)gROOT->GetFunction("pol1");
