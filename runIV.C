@@ -28,5 +28,5 @@
   //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T-10/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,263.15,1e15,alpha);
   //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T-15/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,258.15,1e15,alpha);
   //IV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,253.15,1e15,alpha);
-  IV("no_mult_Petasecca_traptunnel_fl1e15_T-20/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,253.15,1e15,alpha);
+  IVanalysis("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_traptunnel_fl1e15_T-20/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_PAD_Current_pruned.dat","SIMU",1.50e-6,200e-4, 150,10,253.15,1e15,alpha);
 }

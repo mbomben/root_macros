@@ -105,3 +105,27 @@ void IV(const char* fileName, const char* type, double A, double w, double v1, d
   c1->SaveAs(saveFile.Data());
   
 }
+
+void IVanalysis(const char* fileName, const char* type, double A, double w, double v1, double eV, double T, double fluence, double &alpha, double dV=50, double I0=0) {
+  
+  double v;
+  double alphas[3];
+  v = v1 + eV;
+  IV(fileName, type, A, w, v, T, fluence, alpha);
+  alphas[0] = alpha;
+  v = v1 - eV;
+  IV(fileName, type, A, w, v, T, fluence, alpha);
+  alphas[1] = alpha;
+  v = v1;
+  IV(fileName, type, A, w, v, T, fluence, alpha);
+  alphas[2] = alpha;
+
+
+  alpha  = TMath::Mean(3,alphas);
+  double ealpha = TMath::RMS(3,alphas);
+
+  std::cout << "alpha = " << alpha << " A/cm\n";
+  std::cout << "ealpha = " << ealpha << " A/cm\n";
+  std::cout << "alpha ealpha = " << alpha << " " << ealpha << " A/cm\n";
+}
+

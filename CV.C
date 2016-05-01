@@ -12,6 +12,8 @@ const double eR = 11.9;     // Silicon relative dielectric constant
 const double e0 = 8.85e-14; // F/cm
 const double q0 = 1.6e-19;  // C
 
+void CVanalysis(const char* fileName, const char* type, double A, double v1, double v2, double v3, double v4, double &vdepl, double &evdepl, double &neff, double &eneff, double &w, double &ew, bool savePlots);
+
 void CV(const char* fileName, const char* type, double A, double v1, double v2, double v3, double v4, double &vdepl, double &evdepl, double &neff, double &eneff, double &w, double &ew, bool savePlots=false) {
 
   TString simsstring("SIMU");
@@ -201,3 +203,42 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   }
 
 } 
+
+void CVanalysis(const char* fileName, const char* type, double A, double v1, double v2, double v3, double v4, double &vdepl, double &evdepl, double &neff, double &eneff, double &w, double &ew, bool savePlots=false) {
+
+  double correction =10e-2;
+  double v1h = v1*(1+correction);
+  double v1l = v1*(1-correction);
+  double v2h = v2*(1+correction);
+  double v2l = v2*(1-correction);
+  double v3h = v3*(1+correction);
+  double v3l = v3*(1-correction);
+  double v4h = v4*(1+correction);
+  double v4l = v4*(1-correction);
+
+  double vdepls[9];
+  CV(fileName, type, A, v1h, v2, v3, v4, vdepl, evdepl, neff, eneff, w, ew, false);
+  vdepls[0]=vdepl;
+  CV(fileName, type, A, v1l, v2, v3, v4, vdepl, evdepl, neff, eneff, w, ew, false);
+  vdepls[1]=vdepl;
+  CV(fileName, type, A, v1, v2h, v3, v4, vdepl, evdepl, neff, eneff, w, ew, false);
+  vdepls[2]=vdepl;
+  CV(fileName, type, A, v1, v2l, v3, v4, vdepl, evdepl, neff, eneff, w, ew, false);
+  vdepls[3]=vdepl;
+  CV(fileName, type, A, v1, v2, v3h, v4, vdepl, evdepl, neff, eneff, w, ew, false);
+  vdepls[4]=vdepl;
+  CV(fileName, type, A, v1, v2, v3l, v4, vdepl, evdepl, neff, eneff, w, ew, false);
+  vdepls[5]=vdepl;
+  CV(fileName, type, A, v1, v2, v3, v4h, vdepl, evdepl, neff, eneff, w, ew, false);
+  vdepls[6]=vdepl;
+  CV(fileName, type, A, v1, v2, v3, v4l, vdepl, evdepl, neff, eneff, w, ew, false);
+  vdepls[7]=vdepl;
+  CV(fileName, type, A, v1, v2, v3, v4, vdepl, evdepl, neff, eneff, w, ew, true);
+  vdepls[8]=vdepl;
+
+  vdepl  = TMath::Mean(9,vdepls);
+  evdepl = TMath::RMS(9,vdepls); 
+  std::cout << "vdepl = " << vdepl << " V \n";
+  std::cout << "evdepl = " << evdepl << " V \n";
+
+}

@@ -21,5 +21,5 @@
   //CV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_CV_pruned.dat","SIMU",1.5e-6,10, 100,300, 500,v,ev,neff,eneff,w,ew,true);
   //CV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20_Eg1.12/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_CV_pruned.dat","SIMU",1.5e-6,10, 80,300, 500,v,ev,neff,eneff,w,ew,true);
   //CV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20_Eg1.13/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_CV_pruned.dat","SIMU",1.5e-6,10, 60,300, 500,v,ev,neff,eneff,w,ew,true);
-  CV("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20_Eg1.14/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_CV_pruned.dat","SIMU",1.5e-6,10, 50,300, 500,v,ev,neff,eneff,w,ew,true);
+  CVanalysis("/Users/mbomben/work/RD50/LGAD/thickness_studies/w200/no_mult_Petasecca_fl1e15_T20_Eg1.14/ninp_fei4_3pixels_fluence=1e+15_bias=500_RD50_CV_pruned.dat","SIMU",1.5e-6,10, 50,300, 500,v,ev,neff,eneff,w,ew,true);
 }
