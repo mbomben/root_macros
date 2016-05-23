@@ -18,7 +18,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
 
   TString simsstring("SIMU");
   TString datastring("DATA");
-  int NMAX = 1000;
+  int NMAX = 1001;
   if ( ! (simsstring.EqualTo(type) || datastring.EqualTo(type) ) ) {
     std::cerr << "type must be either SIMU or DATA, not -> " << type << "\n";
     exit(2);
@@ -240,5 +240,6 @@ void CVanalysis(const char* fileName, const char* type, double A, double v1, dou
   evdepl = TMath::RMS(9,vdepls); 
   std::cout << "vdepl = " << vdepl << " V \n";
   std::cout << "evdepl = " << evdepl << " V \n";
+  std::cout << "vdepl evdepl = " << vdepl << " " << evdepl << " V\n";
 
 }
