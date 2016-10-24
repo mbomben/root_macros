@@ -1,0 +1,35 @@
+void makeEzGraph(const char* fileName, int V, double f, int w) {
+  TFile* file = new TFile(fileName,"READ");
+  file->cd();
+  TCanvas *c1 = new TCanvas("c1","",1024,768);
+  c1->cd();
+  TTree* tree = (TTree*)file->Get("tree");
+  tree->SetMarkerStyle(21);
+  tree->SetMarkerSize(1.1);
+  int n = tree->Draw("E:z","x>10&&x<11&&y>12&&y<15","goffp");
+  TGraph* gr600 = new TGraph(n,tree->GetV2(),tree->GetV1());
+  gr600->SetMarkerStyle(21);
+  gr600->SetMarkerSize(1.1);
+  gr600->SetMarkerColor(2);
+  gr600->SetTitle(TString::Format("thickness = %d #mum, #phi = %.0e n_{eq}/cm^{2}, V_{bias} = %d V",w,f,V));
+  gr600->SetName(TString::Format("%dum_f%.0e_%dV",w,f,V));
+  gr600->Draw("AP");
+  gr600->GetXaxis()->SetTitle("bulk depth [#mum]");
+  gr600->GetYaxis()->SetTitle("E_{z} [V/cm]");
+  gr600->GetYaxis()->SetTitleOffset(1.5);
+  gr600->GetXaxis()->CenterTitle(1);
+  gr600->GetYaxis()->CenterTitle(1);
+  double max = TMath::MaxElement(gr600->GetN(),gr600->GetY());
+  std::cout << max << "\n";
+  max = max*1.1;
+  std::cout << max << "\n";
+  gr600->GetYaxis()->SetRangeUser(0,max);
+  c1->SetTicks(1,1);
+  c1->SaveAs(TString::Format("Ez-%dum-fl%.0e-%dV.pdf",w,f,V).Data());
+  c1->SaveAs(TString::Format("Ez-%dum-fl%.0e-%dV.png",w,f,V).Data());
+  file->Close();
+  TFile *g = new TFile(TString::Format("Ez-%dum-fl%.0e-%dV.root",w,f,V).Data(),"RECREATE");
+  g->cd();
+  gr600->Write();
+  g->Close();
+}
