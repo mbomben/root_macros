@@ -69,7 +69,9 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grCV->SetLineColor(kBlue);
   grCV->Draw("AP");
   grCV->GetYaxis()->SetTitle("C [F]");
+  grCV->GetYaxis()->SetRangeUser(grCV->Eval(v1*0.9),grCV->Eval(v4*1.1));
   grCV->GetXaxis()->SetTitle("V_{bias} [V]");
+  grCV->GetXaxis()->SetRangeUser(v1*0.9,v4*1.1);
   c1->SetTicks(1);
   c1->SetGrid(1,1);
 
@@ -84,6 +86,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grlogClogV->SetLineColor(kBlack);
   grlogClogV->Draw("AP");
   grlogClogV->GetYaxis()->SetTitle("log_{10}(C/F)");
+  grlogClogV->GetXaxis()->SetRangeUser(TMath::Log10(v1)*0.9,TMath::Log10(v4)*1.1);
   grlogClogV->GetXaxis()->SetTitle("log_{10}(V_{bias}/V)");
   c2->SetTicks(1);
   c2->SetGrid(1,1);
@@ -147,6 +150,8 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grC2V->Draw("AP");
   grC2V->GetYaxis()->SetTitle("C^{-2} [F^{-2}]");
   grC2V->GetXaxis()->SetTitle("V_{bias} [V]");
+  grC2V->GetXaxis()->SetRangeUser(v1*0.9,v4*1.1);
+  grC2V->GetYaxis()->SetRangeUser(grC2V->Eval(v1*0.9),grC2V->Eval(v4*1.1));
   c3->SetTicks(1);
   c3->SetGrid(1,1);
 
