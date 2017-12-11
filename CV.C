@@ -7,10 +7,15 @@
 #include "TROOT.h"
 #include "TF1.h"
 #include "TString.h"
+#include "TObjString.h"
 
 const double eR = 11.9;     // Silicon relative dielectric constant
 const double e0 = 8.85e-14; // F/cm
 const double q0 = 1.6e-19;  // C
+
+double fitFunc (double *x, double *par);
+
+void CVprefit(const char* fileName, double &v1, double &v2, double &v3, double &v4);
 
 void CVanalysis(const char* fileName, const char* type, double A, double v1, double v2, double v3, double v4, double &vdepl, double &evdepl, double &neff, double &eneff, double &w, double &ew, bool savePlots);
 
@@ -18,7 +23,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
 
   TString simsstring("SIMU");
   TString datastring("DATA");
-  int NMAX = 1001;
+  int NMAX = 1002;
   if ( ! (simsstring.EqualTo(type) || datastring.EqualTo(type) ) ) {
     std::cerr << "type must be either SIMU or DATA, not -> " << type << "\n";
     exit(2);
@@ -189,11 +194,17 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
     std::cout << "I will save plots\n";
     TString saveFile(fileName);
     TString cvFile = saveFile;
-    cvFile.ReplaceAll(".dat","_CV.png");
+    TObjArray*  obj = (TObjArray* )saveFile.Tokenize(".");
+    TString basename = ((TObjString*)(obj->At(0)))->GetString();
+    TString Extension = ((TObjString*)(obj->At(1)))->GetString();
+    TString extension;
+    extension.Form(".%s",Extension.Data());
+    cvFile.ReplaceAll(extension.Data(),"_CV.png");
     TString c2vFile = saveFile;
-    c2vFile.ReplaceAll(".dat","_C2V.png");
+    c2vFile.ReplaceAll(extension.Data(),"_C2V.png");
     TString logclogvFile = saveFile;
-    logclogvFile.ReplaceAll(".dat","_logClogV.png");
+    logclogvFile.ReplaceAll(extension.Data(),"_logClogV.png");
+    std::cout << "logclogvFile = " << logclogvFile.Data() << "\n";
     c1->Draw();
     c1->SaveAs(cvFile.Data());
     c2->Draw();
@@ -217,29 +228,174 @@ void CVanalysis(const char* fileName, const char* type, double A, double v1, dou
   double v4l = v4*(1-correction);
 
   double vdepls[9];
+  double ws[9];
+  double neffs[9];
   CV(fileName, type, A, v1h, v2, v3, v4, vdepl, evdepl, neff, eneff, w, ew, false);
   vdepls[0]=vdepl;
+  ws[0]=w;
+  neffs[0]=neff;
   CV(fileName, type, A, v1l, v2, v3, v4, vdepl, evdepl, neff, eneff, w, ew, false);
   vdepls[1]=vdepl;
+  ws[1]=w;
+  neffs[1]=neff;
   CV(fileName, type, A, v1, v2h, v3, v4, vdepl, evdepl, neff, eneff, w, ew, false);
   vdepls[2]=vdepl;
+  ws[2]=w;
+  neffs[2]=neff;
   CV(fileName, type, A, v1, v2l, v3, v4, vdepl, evdepl, neff, eneff, w, ew, false);
   vdepls[3]=vdepl;
+  ws[3]=w;
+  neffs[3]=neff;
   CV(fileName, type, A, v1, v2, v3h, v4, vdepl, evdepl, neff, eneff, w, ew, false);
   vdepls[4]=vdepl;
+  ws[4]=w;
+  neffs[4]=neff;
   CV(fileName, type, A, v1, v2, v3l, v4, vdepl, evdepl, neff, eneff, w, ew, false);
   vdepls[5]=vdepl;
+  ws[5]=w;
+  neffs[5]=neff;
   CV(fileName, type, A, v1, v2, v3, v4h, vdepl, evdepl, neff, eneff, w, ew, false);
   vdepls[6]=vdepl;
+  ws[6]=w;
+  neffs[6]=neff;
   CV(fileName, type, A, v1, v2, v3, v4l, vdepl, evdepl, neff, eneff, w, ew, false);
   vdepls[7]=vdepl;
+  ws[7]=w;
+  neffs[7]=neff;
   CV(fileName, type, A, v1, v2, v3, v4, vdepl, evdepl, neff, eneff, w, ew, true);
   vdepls[8]=vdepl;
+  ws[8]=w;
+  neffs[8]=neff;
 
   vdepl  = TMath::Mean(9,vdepls);
   evdepl = TMath::RMS(9,vdepls); 
+  w  = TMath::Mean(9,ws);
+  ew = TMath::RMS(9,ws); 
+  neff  = TMath::Mean(9,neffs);
+  eneff = TMath::RMS(9,neffs); 
   std::cout << "vdepl = " << vdepl << " V \n";
   std::cout << "evdepl = " << evdepl << " V \n";
   std::cout << "vdepl evdepl = " << vdepl << " " << evdepl << " V\n";
+  std::cout << "w ew = " << w*1e4 << " " << ew*1e4 << " mum\n";
+  std::cout << "neff eneff = " << neff << " " << eneff << " 1./cm^3\n";
 
+}
+
+void CVprefit(const char* fileName, double &v1, double &v2, double &v3, double &v4) {
+  TCanvas *cp = new TCanvas("cp","",2000,1000);
+  cp->cd();
+  TGraph *gr = new TGraph(fileName);
+  gr->SetName("gr");
+  gr->SetMarkerStyle(24);
+  gr->SetMarkerSize(1.2);
+  gr->Draw("AP");
+
+  int N = gr->GetN();
+  double *X = new double[N];
+  double *Y = new double[N];
+
+  X = gr->GetX();
+  Y = gr->GetY();
+
+  double *logX = new double[N];
+  double *logY = new double[N];
+  bool skip0 = false;
+  int istart = 0;
+  if ( (fabs(X[0]) == X[0])) {
+    skip0 = true;
+    istart = 1;
+  }
+  for (int i = istart; i < N; i++ ) {
+    std::cout << "X = " << X[i] << "\t";
+    std::cout << "Y = " << Y[i] << "\n";
+    logX[i]=TMath::Log10(fabs(X[i]));
+    logY[i]=TMath::Log10(fabs(Y[i]));
+    std::cout << "logX = " << logX[i] << "\t";
+    std::cout << "logY = " << logY[i] << "\n";
+  }
+
+  int logN = ((skip0) ? (N-1) : N);
+  std::cout << "N = " << N << "\n";
+  std::cout << "logN = " << logN << "\n";
+  TCanvas *cd = new TCanvas("cd","",2000,1000);
+  cd->cd();
+  TGraph *logGR = new TGraph(logN,logX,logY);
+  logGR->SetName("logGR");
+  logGR->SetMarkerStyle(24);
+  logGR->SetMarkerSize(1.2);
+  logGR->Draw("AP");
+
+  double minY = 0.0;
+  int min_index = 0;
+  for ( int i = 1; i < N-1; i++ ) {
+    if ( logY[i] < minY ) {
+      minY = logY[i];
+      min_index = i;
+    }
+  }
+  double vdepl_hint = logX[min_index];
+  std::cout << "vdepl_hint = " << vdepl_hint << "\n";
+
+  TF1* fl = new TF1("fl","pol1",logX[0],logX[logN-1]);
+  TF1* fh = new TF1("fh","pol2",logX[0],logX[logN-1]);
+  int n1 = 1;
+  int n2 = 3;
+  int n3 = N-4;
+  int n4 = N-2;
+  logGR->Fit("fl","R","",logX[n1],logX[n2]);
+  double lowProb = fl->GetProb();
+  logGR->Fit("fh","R","",logX[n3],logX[n4]);
+  double highProb = fh->GetProb();
+  bool low = true;
+  if ( lowProb > highProb ) {
+    while ( lowProb > highProb ) {
+      n2 += 1;
+      assert(n2<N-2);
+      logGR->Fit("fl","R","",logX[n1],logX[n2]);
+      lowProb = fl->GetProb();
+    }
+  } else {
+    low = false;
+    while ( lowProb < highProb ) {
+      n3 -= 1;
+      assert(n3);
+      logGR->Fit("fh","R","",logX[n3],logX[n4]);
+      highProb = fh->GetProb();
+    }
+  }
+  v1 = X[n1];
+  v4 = X[n4];
+  if ( low ) {
+    v2 = X[n2-10];
+    v3 = X[n2+10];
+  } else {
+    v2 = X[n3-10];
+    v3 = X[n3+10];
+  }
+  std::cout << "v1 = " << v1 << "\n";
+  std::cout << "v2 = " << v2 << "\n";
+  std::cout << "v3 = " << v3 << "\n";
+  std::cout << "v4 = " << v4 << "\n";
+
+
+
+}
+
+double fitFunc (double *x, double *par) {
+  double v = x[0];
+  double m1 = par[0];
+  double q1 = par[1];
+  double m2 = par[2];
+  double q2 = par[3];
+  double vdepl = par[4];
+
+  double y = 0;
+
+  if ( v < vdepl ) {
+    y = m1*v+q1;
+  } else {
+    y = m2*v+q2;
+  }
+
+  return y;
 }
