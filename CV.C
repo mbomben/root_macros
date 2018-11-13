@@ -156,7 +156,7 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
   grC2V->GetYaxis()->SetTitle("C^{-2} [F^{-2}]");
   grC2V->GetXaxis()->SetTitle("V_{bias} [V]");
   grC2V->GetXaxis()->SetRangeUser(v1*0.9,v4*1.1);
-  grC2V->GetYaxis()->SetRangeUser(grC2V->Eval(v1*0.9),grC2V->Eval(v4*1.1));
+  grC2V->GetYaxis()->SetRangeUser(grC2V->Eval(v1*0.9),grC2V->Eval(v4)*1.1);
   c3->SetTicks(1);
   c3->SetGrid(1,1);
 
