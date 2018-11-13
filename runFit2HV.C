@@ -4,7 +4,7 @@ void runFit2HV(const char* fileName, float &rms, float prec = 0.02)
   gROOT->Reset();
   gROOT->LoadMacro("Fit2HV.C+");
 
-  TGraphsErrors *gre = new TGraphsErrors(fileName);
+  TGraphErrors *gre = new TGraphErrors(fileName);
 
   Fit2HV(gre,prec,rms);
 
