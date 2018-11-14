@@ -200,10 +200,33 @@ void CV(const char* fileName, const char* type, double A, double v1, double v2, 
     TString saveFile(fileName);
     TString cvFile = saveFile;
     TObjArray*  obj = (TObjArray* )saveFile.Tokenize(".");
-    TString basename = ((TObjString*)(obj->At(0)))->GetString();
-    TString Extension = ((TObjString*)(obj->At(1)))->GetString();
+    TString basename;
+    TString Extension;
     TString extension;
-    extension.Form(".%s",Extension.Data());
+    // checking how many '.' are in fileName
+    int nfields = obj->GetLast();
+    // checking different cases
+    // nfields == 0 => no extension => aborting
+    if ( nfields == 0 ) { 
+      std::cout << "No extension found in file name.\nAborting\n";
+      exit(12);
+    }
+    // nfields == 1 => extension and no other '.' in the fileName
+    else if ( nfields == 0 ) {
+      basename = ((TObjString*)(obj->At(0)))->GetString();
+      Extension = ((TObjString*)(obj->At(1)))->GetString();
+      extension.Form(".%s",Extension.Data());
+    }
+    // nfields == 2 => extension and other '.' in the fileName
+    else {
+      Extension = ((TObjString*)(obj->At(nfields)))->GetString();
+      extension.Form(".%s",Extension.Data());
+      extension.Form(".%s",Extension.Data());
+      // need to loop over the different fields to create the basename
+      for ( int ifield = 0; ifield < nfields; ifield++ ) {
+        basename.Form("%s.%s",basename.Data(),(((TObjString*)(obj->At(ifield)))->GetString()).Data());
+      }
+    }
     cvFile.ReplaceAll(extension.Data(),"_CV.png");
     TString c2vFile = saveFile;
     c2vFile.ReplaceAll(extension.Data(),"_C2V.png");
