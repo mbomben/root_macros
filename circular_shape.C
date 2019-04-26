@@ -37,6 +37,7 @@ void circular_shape(double xc, double yc, double R, double theta0, double theta1
   gPad->SetTicks(1,1);
 
   std::cout << "\n\tpolygon=\"";
+  std::cout << xc   << "," << yc   << " ";
   for (int i = 0; i < Npts-1; i++ ) {
     std::cout << X[i] << "," << Y[i] << " ";
   }
