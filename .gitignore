@@ -1,3 +1,5 @@
 *.d
 *.png
 *.pcm
+*.so
+*DS_Store
