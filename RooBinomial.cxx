@@ -65,14 +65,14 @@
  }
  
  ////////////////////////////////////////////////////////////////////////////////
- /// Implementation in terms of the TMath::Binomial() function.
+ /// Implementation in terms of the ROOT::Math::beta_pdf function.
  
  Double_t RooBinomial::evaluate() const
  {
    Int_t nk = _noRounding ? k : floor(k);
    if(_protectNegative && p<0)
      return 1e-3;
-   return ROOT::Math::beta_pdf(p, nk+1, N-nk+1);
+   return ROOT::Math::beta_pdf(p, nk+1, N-nk+1)/(N+1);
  }
  
  
