@@ -1,3 +1,6 @@
+using namespace RooFit;
+using namespace RooStats;
+
 /*double fitFunc( double *x, double *par ) {
   double x1= x[0];
   double x2= x[1];
@@ -91,4 +94,13 @@ void MultiVariate( double mu1v = 0, double mu2v = 1, double s1v = 1, double s2v 
   gStyle->SetOptStat(0);
 
   c1->SaveAs("MultiVariate.pdf");
+
+  *x1 = 4.;
+  RooPlot *x2frame = x2->frame();
+  mvg.plotOn(x2frame);
+  x2frame->Draw();
+
+  mvg.plotOn(x2frame,Project(*x1),LineStyle(kDashed),LineColor(kRed));
+  x2frame->Draw();
+  c1->SaveAs("sliceMultiVariate.pdf");
 }
