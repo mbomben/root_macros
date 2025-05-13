@@ -154,4 +154,26 @@ results_40V->SetBorderSize(0);
 
 
   //landau_mpv.Print();
+
+
+  // taking the average of the max of convolution and of the landau
+  double average_mpv = (mpv+landau_mpv.getVal())/2.0;
+  // the uncertainty is the semi-difference
+  double unc_mpv = fabs((mpv-landau_mpv.getVal())/2.0);
+  // print the results
+  std::cout << "average mpv in ke- with uncertainty:\n";
+  std::cout << average_mpv << " +/- " << unc_mpv << "\n";
+
+  TString outputAverageFileName;
+  outputAverageFileName.Form("average_%s",outputFileName.Data());
+  std::cout << outputAverageFileName.Data() << "\n";
+  outputAverageFileName.ReplaceAll(".pdf",".txt");
+
+  // save the average to a file
+  ofstream average_mpv_file;
+  average_mpv_file.open(outputAverageFileName.Data());
+  average_mpv_file << average_mpv << "\t" << unc_mpv << "\n";
+ 
+  average_mpv_file.close();
+
 }
